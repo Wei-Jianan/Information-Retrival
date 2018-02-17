@@ -18,8 +18,10 @@ import java.util.Comparator;
 
 public class Utils {
     private final static File TEMP_DIR = new File("src/temp");
-    private final static File INDEX_DIR = TEMP_DIR.toPath().resolve("index").toFile();
-    private final static File RAW_DOC_DIR = TEMP_DIR.toPath().resolve("raw").toFile();
+    public final static File INDEX_DIR = TEMP_DIR.toPath().resolve("index").toFile();
+    public final static File RAW_DOC_DIR = TEMP_DIR.toPath().resolve("raw").toFile();
+    public final static String cranAllName = "cran.all.1400";
+
     private final static URL url;
 
     static {
@@ -87,15 +89,15 @@ public class Utils {
         return clear(f);
     }
 
-    public static void clearFP(File toBeDeleted) throws IOException {
+//    public static void clearFP(File toBeDeleted) throws IOException {
 //        Path pathToBeDEleted = Paths.get(toBeDeleted.getAbsolutePath());
 //        Files
 //                .walk(pathToBeDEleted)
 //                .sorted(Comparator.reverseOrder())
 //                .map(Path::toFile)
 //                .forEach(File::delete);
-//        FileUtils.forceDelete(new File(destination))
-    }
+//        FileUtils.forceDelete(new File(destination));
+//    }
 
     public static File downloadFromUrltoDir(URL fromUrl, File toDir) {
         String rawDocName = fromUrl.toString().substring(fromUrl.toString().lastIndexOf("/") + 1);
