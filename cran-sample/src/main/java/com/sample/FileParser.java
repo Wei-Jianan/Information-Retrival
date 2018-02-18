@@ -45,7 +45,7 @@ public class FileParser {
 
         HashMap dic = new HashMap();
 
-        final Pattern regex = Pattern.compile(".*(\\d*)\\.T(.*)\\.A(.*)\\.B(.*)\\.W(.*)");
+        final Pattern regex = Pattern.compile("^.?(\\d*)\\.T(.*)\\.A(.*)\\.B(.*)\\.W(.*)");
         Matcher matcher = regex.matcher(atomixRawDoc);
         if (matcher.matches()) {
 
@@ -68,9 +68,9 @@ public class FileParser {
     public static void main(String[] args) {
 //        List<HashMap> toBeIndexed = new ArrayList<HashMap>();
 //        toBeIndexed = parseCranFile(cranAllFile);
-        System.out.println(divideFile(RAW_DOC).get(1));
-        String totested = divideFile(RAW_DOC).get(2);
-        System.out.println(transformRawToDic(totested));
+        System.out.println(divideFile(RAW_DOC).get(1300));
+//        String totested = divideFile(RAW_DOC).get(2);
+//        System.out.println(transformRawToDic(totested));
 
         List<HashMap> hashMaps = parseCranFile(RAW_DOC);
         System.out.println(hashMaps.get(3).get("identity"));
