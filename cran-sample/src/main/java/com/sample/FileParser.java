@@ -58,7 +58,6 @@ public class FileParser {
                     int QueryId = Integer.parseInt(matcher.group(1));
                     String RelevantDocId = matcher.group(2);
                     int relevancyScore = Integer.parseInt(matcher.group(3));
-
 //                    System.out.println("QueryID: " + QueryId + " RelevantDocId: " + RelevantDocId + " relevancyScore: " + relevancyScore);
                     try {
                         Set set = dividedRawQrel.get(QueryId - 1);
@@ -85,7 +84,6 @@ public class FileParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return dividedRawQrel;
     }
 
@@ -96,7 +94,6 @@ public class FileParser {
             dividedRawDoc = new ArrayList(Arrays.asList(wholeRawDoc.split(".I")));
             dividedRawDoc.remove(0);
 //            System.out.println("the number of doc in the whole doc is :" + dividedRawDoc.size());
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);

@@ -60,8 +60,8 @@ public class Searcher {
     }
 
     public TopDocs search(String questionStr, int numToRanked) {
-        this.counter += 1;
-        System.out.println(" the is the " + this.counter + " question!");
+//        this.counter += 1;
+//        System.out.println(" the is the " + this.counter + " question!");
         Query query = null;
         QueryParser queryParser = new MyQueryParser(fields, this.analyzer);
         try {
