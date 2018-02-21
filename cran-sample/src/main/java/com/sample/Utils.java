@@ -21,7 +21,12 @@ public class Utils {
     public final static File INDEX_DIR = TEMP_DIR.toPath().resolve("index").toFile();
     public final static File RAW_DOC_DIR = TEMP_DIR.toPath().resolve("raw").toFile();
     public final static String cranAllName = "cran.all.1400";
+    public final static String cranQryName = "cran.qry";
+    public final static String cranQrelName = "cranqrel";
 
+    public static final File RAW_DOC = new File(RAW_DOC_DIR, cranAllName);
+    public static final File RAW_QRY = new File(RAW_DOC_DIR, cranQryName);
+    public static final File RAW_QREL = new File(RAW_DOC_DIR, cranQrelName);
     private final static URL url;
 
     static {
@@ -54,10 +59,12 @@ public class Utils {
         Arrays.stream(RAW_DOC_DIR.list())
                 .sorted()
                 .forEach(System.out::println);
+        System.out.println("\n\n");
     }
 
     public static void delate(File toDeleteFile) {
         toDeleteFile.delete();
+
         System.out.println(toDeleteFile.toString() + " are deleted.");
     }
 
@@ -88,16 +95,17 @@ public class Utils {
         File f = new File(toBeDeleted.toString());
         return clear(f);
     }
-
-//    public static void clearFP(File toBeDeleted) throws IOException {
-//        Path pathToBeDEleted = Paths.get(toBeDeleted.getAbsolutePath());
-//        Files
-//                .walk(pathToBeDEleted)
-//                .sorted(Comparator.reverseOrder())
-//                .map(Path::toFile)
-//                .forEach(File::delete);
+//
+    public static void clearFP(File toBeDeleted) throws IOException {
+        Path pathToBeDEleted = Paths.get(toBeDeleted.getAbsolutePath());
+        Files
+                .walk(pathToBeDEleted)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        // common-io to delete a directory
 //        FileUtils.forceDelete(new File(destination));
-//    }
+    }
 
     public static File downloadFromUrltoDir(URL fromUrl, File toDir) {
         String rawDocName = fromUrl.toString().substring(fromUrl.toString().lastIndexOf("/") + 1);
