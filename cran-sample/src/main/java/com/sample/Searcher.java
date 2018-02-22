@@ -24,7 +24,7 @@ public class Searcher {
     private Analyzer analyzer;
     private File indexDir;
     private IndexSearcher indexSearcher;
-    public static String[] fields = {"text", "abstraction", "author", "bibligraphy"};
+    public static String[] fields = {"text", "abstraction", "author", "bibliography"};
     private int counter = 0;
 
     public Searcher(Indexer indexer) {
@@ -70,6 +70,7 @@ public class Searcher {
             e.printStackTrace();
         }
         try {
+
             return this.indexSearcher.search(query, numToRanked);
         } catch (IOException e) {
             e.printStackTrace();

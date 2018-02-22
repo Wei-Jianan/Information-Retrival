@@ -2,15 +2,16 @@ package com.sample;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
-    private static int numToRank = 30; // num of result to ranked because 30 is the most people are will to see.
-    private static float cutoff = 3.1f; // the score larger than 3 will be considered as not relevant.
+    private static int numToRank = 100; // num of result to ranked because 30 is the most people are will to see.
+    private static float cutoff = 3f; // the score larger than 3 will be considered as not relevant.
     public static void main(String[] args) {
 //        try {
 //            Utils.initialize();
@@ -18,10 +19,15 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
+        int idx = 0;
         ArrayList<HashMap> rawDocDic = FileParser.parseCranFile(Utils.RAW_DOC);
         ArrayList<String> qryList = FileParser.parseCranQry(Utils.RAW_QRY);
         ArrayList<Set<String>> qrel = FileParser.parseQrel(Utils.RAW_QREL, cutoff);
-
+//        qryList.sort(String::compareTo);
+//        String temp = qryList.get(idx);
+//        qryList.add(temp);
+//        qryList.remove(idx);
+//        System.out.println(qrel.get(idx));
         Analyzer analyzer = new StandardAnalyzer(); // to customize the Analyzer;
         Indexer indexer = null;
         try {
@@ -32,8 +38,15 @@ public class Main {
             System.exit(1);
         }
         Searcher searcher  = new Searcher(indexer);
-        ArrayList<ArrayList<String>> result = searcher.searchQryList(qryList, numToRank);
-//        System.out.println(result.get(225));
-        Evaluation.customizedEvaluate(result, qrel);
+        ArrayList<ArrayList<String>> results = searcher.searchQryList(qryList, numToRank);
+//        TopDocs topDocs = searcher.search(qryList.get(idx), numToRank);
+//                ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+//        List result = Arrays.stream(scoreDocs)
+//                .map(scoreDoc -> scoreDoc.doc)
+//                .collect(Collectors.toList());
+//        System.out.println("standeard answer: \t" + result);
+//        System.out.println("results:\t\t\t" + results.get(idx));
+//        Evaluation.findAP(results.get(idx), qrel.get(idx));
+        Evaluation.customizedEvaluate(results, qrel);
     }
 }

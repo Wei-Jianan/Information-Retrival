@@ -73,7 +73,7 @@ public class Indexer {
             if (writer.getConfig().getOpenMode() == IndexWriterConfig.OpenMode.CREATE) {
                 writer.addDocument(doc);
             } else {
-                writer.updateDocument(new Term("idendity", dic.get("diendity")), doc);
+                writer.updateDocument(new Term("identity", dic.get("identity")), doc);
             }
         } catch (IOException e) {
             e.printStackTrace();

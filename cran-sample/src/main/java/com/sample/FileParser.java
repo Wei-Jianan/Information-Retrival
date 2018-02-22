@@ -18,7 +18,6 @@ public class FileParser {
                 tobeDiced.stream()
                         .map(FileParser::transformRawToDic)
                         .collect(Collectors.toList());
-
         return new ArrayList(toBeIndexed);
     }
 
@@ -36,7 +35,6 @@ public class FileParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return dividedRawQry;
     }
 
@@ -44,7 +42,7 @@ public class FileParser {
         // the most ugly code I have ever written!!! To be refactor
         // For the scalability reason, The Set type should be change to ArrayList
         ArrayList<Set<String>> dividedRawQrel = new ArrayList();
-        if (cutoff >= 5 || cutoff < 1) {
+        if (cutoff > 5 || cutoff < 1) {
             System.out.println("cutoff should between 1 and 5");
             System.exit(1);
         }
@@ -75,10 +73,7 @@ public class FileParser {
                     }
 //                    System.out.println("still working!");
                 }
-
-
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -111,7 +106,6 @@ public class FileParser {
         final Pattern regex = Pattern.compile("^\\D*(\\d*)\\D*\\.T(.*)\\.A(.*)\\.B(.*)\\.W(.*)");
         Matcher matcher = regex.matcher(atomixRawDoc);
         if (matcher.matches()) {
-
             String identity = matcher.group(1);
             String abstraction = matcher.group(2);
             String author = matcher.group(3);
@@ -141,7 +135,8 @@ public class FileParser {
 //        System.out.println(        transformRawToDic(hashMaps.get(3)).get("identity"));
 //        System.out.println(parseCranQry(Utils.RAW_QRY).get(4));
 //        System.out.println("the parsed cran Qrel look like: " + parseCranFile(Utils.RAW_DOC).get(1));
-        System.out.println("the parsed cran Qrel look like: " + parseQrel(Utils.RAW_QREL, (float) 3.1));
+        System.out.println(parseCranFile(Utils.RAW_DOC).get(1200));
+//        System.out.println("the parsed cran Qrel look like: " + parseQrel(Utils.RAW_QREL, (float) 3.1));
     }
 
 
