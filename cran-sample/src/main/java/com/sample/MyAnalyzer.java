@@ -9,3 +9,4 @@ public class MyAnalyzer extends Analyzer{
         return null;
     }
 }
+

@@ -27,6 +27,8 @@ public class FileParser {
             String wholeRawQry = reader.lines()
                     .collect(Collectors.joining(" "))
                     .replace("?", " ");
+//                    wholeRawQry.replace("(", " ");
+//                    wholeRawQry.replace(")", " ");
             dividedRawQry = new ArrayList(Arrays.asList(wholeRawQry.split("\\.I.*?\\.W ")));
             dividedRawQry.remove(0);
 //            System.out.println(dividedRawQry.toArray().length);
@@ -59,14 +61,14 @@ public class FileParser {
 //                    System.out.println("QueryID: " + QueryId + " RelevantDocId: " + RelevantDocId + " relevancyScore: " + relevancyScore);
                     try {
                         Set set = dividedRawQrel.get(QueryId - 1);
-                        if (relevancyScore <= cutoff && relevancyScore > 0) {
+                        if (relevancyScore <= cutoff ) {
                             set.add(RelevantDocId);
                         }
                     } catch (IndexOutOfBoundsException e) {
 //                        e.printStackTrace();
 //                        System.out.println(" gotcha ya!!");
                         Set<String> set = new HashSet<String>();
-                        if (relevancyScore <= cutoff && relevancyScore > 0) {
+                        if (relevancyScore <= cutoff) {
                             set.add(RelevantDocId);
                         }
                         dividedRawQrel.add(set);

@@ -10,16 +10,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static int numToRank = 100; // num of result to ranked because 30 is the most people are will to see.
-    private static float cutoff = 3f; // the score larger than 3 will be considered as not relevant.
+    private static int numToRank = 50; // num of result to ranked because 30 is the most people are will to see.
+    private static float cutoff = 4f; // the score larger than 3 will be considered as not relevant.
     public static void main(String[] args) {
-//        try {
-//            Utils.initialize();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Utils.initialize();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        int idx = 0;
+//        int idx = 0;
         ArrayList<HashMap> rawDocDic = FileParser.parseCranFile(Utils.RAW_DOC);
         ArrayList<String> qryList = FileParser.parseCranQry(Utils.RAW_QRY);
         ArrayList<Set<String>> qrel = FileParser.parseQrel(Utils.RAW_QREL, cutoff);
@@ -39,6 +39,14 @@ public class Main {
         }
         Searcher searcher  = new Searcher(indexer);
         ArrayList<ArrayList<String>> results = searcher.searchQryList(qryList, numToRank);
+//        results = results.stream()
+//                .map(list -> list.stream()
+//                                    .map(str -> Integer.parseInt(str) + 1)
+//                                    .map(num -> num.toString())
+//                                    .collect(Collectors.toCollection(ArrayList::new)))
+//                .collect(Collectors.toCollection(ArrayList::new));
+        Evaluation.customizedEvaluate(results, qrel);
+
 //        TopDocs topDocs = searcher.search(qryList.get(idx), numToRank);
 //                ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 //        List result = Arrays.stream(scoreDocs)
@@ -47,6 +55,5 @@ public class Main {
 //        System.out.println("standeard answer: \t" + result);
 //        System.out.println("results:\t\t\t" + results.get(idx));
 //        Evaluation.findAP(results.get(idx), qrel.get(idx));
-        Evaluation.customizedEvaluate(results, qrel);
     }
 }
