@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class Searcher {
     private Analyzer analyzer;
     private File indexDir;
-    private IndexSearcher indexSearcher;
+    public IndexSearcher indexSearcher;
     public static String[] fields = {"text", "abstraction", "author", "bibliography"};
     private int counter = 0;
 
