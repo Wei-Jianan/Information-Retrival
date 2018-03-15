@@ -1,4 +1,4 @@
-from journalparser import utils
+from utils import Utils
 import json
 import os
 
@@ -7,7 +7,7 @@ class JSONWriter():
     def __init__(self, dir=None):
         self.dir = dir
         if not dir:
-            self.dir = utils.Utils.DIR_JSON
+            self.dir = Utils.DIR_JSON
     def dicWrite(self, dic):
         filename = dic['docno'] + '.json'
         json_byte = json.dumps(dic)

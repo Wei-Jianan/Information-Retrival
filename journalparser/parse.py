@@ -1,3 +1,4 @@
+import argparse
 import io
 import multiprocessing
 import os
@@ -131,4 +132,15 @@ def parseInOrder():
 
 
 if __name__ == '__main__':
-    parseMultiProc()
+    # parseMultiProc()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', type=str, help="a full path to Assigment folder.\t Attention there is a space in 'Assignment Two'")
+    parser.add_argument('-t',  type=str, help='a full path where you want to save the json files')
+    args = parser.parse_args()
+
+    if  args.t and args.f:
+        Utils.initialize(args.f, args.t)
+        parseMultiProc()
+    else:
+        print "-f are -t are required\ncheck python2 parser.py --help"
+    # print parser.parse_args(('from'))

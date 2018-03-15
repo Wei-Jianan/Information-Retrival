@@ -8,9 +8,9 @@ class Utils():
     def initialize(cls, root_dir = None, json_dir = None):
         print 'initialized'
         if root_dir:
-            cls.DIR_ASSIGNMENT = root_dir
+            cls.DIR_ASSIGNMENT = os.path.abspath(root_dir)
         if json_dir:
-            cls.DIR_JSON = json_dir
+            cls.DIR_JSON = os.path.abspath(json_dir)
         if not os.path.isdir(cls.DIR_JSON):
             os.mkdir(cls.DIR_JSON)
             print 'JSON dir created'

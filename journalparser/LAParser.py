@@ -1,7 +1,7 @@
 from HTMLParser import HTMLParser
 
-from journalparser.JSONWriter import JSONWriter
-from journalparser.Writable import Writable
+from JSONWriter import JSONWriter
+from Writable import Writable
 
 
 class LAParser(HTMLParser, Writable):
