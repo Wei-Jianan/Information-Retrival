@@ -1,4 +1,4 @@
 this parser only work for python 2.
-main .py file is parser.py
+type 'python2 parser.py --help' first.
 type command like 'python2 parser.py -f ~/Assignment\ Twooo  -t ~/where_json_put'
 multiprocessing take 2min in my Mac
