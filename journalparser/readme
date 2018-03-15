@@ -1,0 +1,3 @@
+this parser only work for python 2.
+main .py file is parser.py
+type command like 'python2 parser.py -f ~/Assignment\ Twooo  -t ~/where_json_put'
