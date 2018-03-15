@@ -23,9 +23,8 @@ def main():
     with open(la_PATH) as f:
         doc = f.read()
         doc = doc.replace('<P>', ' ').replace('</P>', ' ')
-        parser = LAParser()
-        parser.feed(doc)
+        # parser = LAParser()
+        # parser.feed(doc)
 
 
-if __name__ == "__main__":
-    main()
+

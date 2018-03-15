@@ -11,10 +11,13 @@ class FBParser(HTMLParser, Writable):
         self.doc = False
         self.docno = False
         self.text = False
+
         self.writer = JSONWriter(dir)
+        self.dic = {}
         # self.counter = 0
 
     def _writedown(self):
+        # print 'writed down by class:', self.__class__, '    file:', self.dic['docno']
         self.writer.dicWrite(self.dic)
 
     def handle_starttag(self, tag, attrs):
@@ -30,7 +33,6 @@ class FBParser(HTMLParser, Writable):
         if tag == 'text':
             if self.doc:
                 self.text = True
-                print "Encountered a start tag:", tag
 
     def handle_endtag(self, tag):
         if tag == 'doc':
@@ -38,16 +40,16 @@ class FBParser(HTMLParser, Writable):
             self.docno = False
             self.text = False
 
-            # self.writer.dicWrite(self.dic)
+            # meet end 'doc' tag to write down a individual file
             self._writedown()
+            # print 'dic keys!!!!!!!!', self.dic.keys()
             self.dic.clear()
         if tag == 'docno':
             self.docno = False
-            # make sure there is no enter in in dic['docno']
+            # make sure there is no enter,no space in in dic['docno']
             self.dic['docno'] = ''.join(self.dic['docno'].split())
         if tag == 'text':
             self.text = False
-
 
     def handle_data(self, data):
         if self.doc and self.docno:
@@ -56,4 +58,3 @@ class FBParser(HTMLParser, Writable):
             # print data
         if self.doc and self.text:
             self.dic['text'] = self.dic.get('text', '') + data
-

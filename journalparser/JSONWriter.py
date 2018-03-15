@@ -9,7 +9,7 @@ class JSONWriter():
         if not dir:
             self.dir = utils.Utils.DIR_JSON
     def dicWrite(self, dic):
-        filename = dic['docno']
+        filename = dic['docno'] + '.json'
         json_byte = json.dumps(dic)
         with open(os.path.join(self.dir, filename), 'wb') as f:
             f.write(json_byte)

@@ -1,9 +1,11 @@
 from HTMLParser import HTMLParser
 
+from journalparser.JSONWriter import JSONWriter
+from journalparser.Writable import Writable
 
 
-class FTParser(HTMLParser):
-    def __init__(self):
+class FTParser(HTMLParser, Writable):
+    def __init__(self, dir=None):
         # super(MyParser, self).__init__(convert_charrefs=True)
         HTMLParser.__init__(self)
         self.doc = False
@@ -13,11 +15,19 @@ class FTParser(HTMLParser):
         self.headline = False
         self.text = False
         # self.counter = 0
+        self.writer = JSONWriter(dir)
+        self.dic = {}
+
+    def _writedown(self):
+        # print 'writed down by class:', self.__class__, '    file:', self.dic['docno']
+        self.writer.dicWrite(self.dic)
 
     def handle_starttag(self, tag, attrs):
         if tag == 'doc':
             self.doc = True
             self.docno = self.docno = self.profile = self.date = self.headline = self.text = False
+            # meet 'doc' tag create an empty dictionary
+            self.dic = {}
         elif tag == 'docno':
             self.docno = True
         elif tag == 'profile':
@@ -34,8 +44,14 @@ class FTParser(HTMLParser):
         if tag == 'doc':
             self.doc = False
             self.docno = self.docno = self.profile = self.date = self.headline = self.text = False
+            # meet end 'doc' tag to write down a individual file
+            self._writedown()
+            # print 'dic keys!!!!!!!!', self.dic.keys()
+            self.dic.clear()
         elif tag == 'docno':
             self.docno = False
+            # make sure there is no enter,no space in in dic['docno']
+            self.dic['docno'] = ''.join(self.dic['docno'].split())
         elif tag == 'profile':
             self.profile = False
         elif tag == 'date':
@@ -48,13 +64,13 @@ class FTParser(HTMLParser):
 
     def handle_data(self, data):
         if self.doc and self.docno:
-            print 'docno:\t', data
+            self.dic['docno'] = self.dic.get('docno', '') + data
         elif self.doc and self.profile:
-            print 'profile:\t', data
+            self.dic['profile'] = self.dic.get('profile', '') + data
         elif self.doc and self.date:
-            print 'date:\t', data
+            self.dic['date'] = self.dic.get('date', '') + data
         elif self.doc and self.headline:
-            print 'headline:\t', data
+            self.dic['headline'] = self.dic.get('headline', '') + data
         elif self.doc and self.text:
-            print 'text:\t', data[0:10]
+            self.dic['text'] = self.dic.get('text', '') + data
         # print "Encountered some data  :"#, data

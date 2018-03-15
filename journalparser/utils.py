@@ -6,12 +6,16 @@ class Utils():
 
     @classmethod
     def initialize(cls, root_dir = None, json_dir = None):
+        print 'initialized'
         if root_dir:
             cls.DIR_ASSIGNMENT = root_dir
         if json_dir:
             cls.DIR_JSON = json_dir
         if not os.path.isdir(cls.DIR_JSON):
             os.mkdir(cls.DIR_JSON)
+            print 'JSON dir created'
+        else:
+            print 'JSON alread exixted'
         cls.DIR_FB = os.path.join(cls.DIR_ASSIGNMENT, 'fbis')
         cls.DIR_FT = os.path.join(cls.DIR_ASSIGNMENT, 'ft')
         cls.DIR_FR = os.path.join(cls.DIR_ASSIGNMENT, 'fr94')
