@@ -1,8 +1,8 @@
 import os
 
 class Utils():
-    DIR_ASSIGNMENT = '/Users/jiananwei/Desktop/Assignment Two'
-    DIR_JSON = '/Users/jiananwei/Desktop/JSON'
+    DIR_ASSIGNMENT = None #'/users/jiananwei/desktop/assignment two'
+    DIR_JSON = None #'/Users/jiananwei/Desktop/JSON'
 
     @classmethod
     def initialize(cls, root_dir = None, json_dir = None):
