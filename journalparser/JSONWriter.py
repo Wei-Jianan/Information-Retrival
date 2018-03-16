@@ -5,9 +5,10 @@ import os
 class JSONWriter():
 
     def __init__(self, dir=None):
-        self.dir = dir
         if not dir:
             self.dir = Utils.DIR_JSON
+        else:
+            self.dir = dir
     def dicWrite(self, dic):
         filename = dic['docno'] + '.json'
         json_byte = json.dumps(dic)
