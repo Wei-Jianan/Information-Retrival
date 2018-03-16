@@ -9,10 +9,11 @@ from multiprocessing.pool import ThreadPool
 from FBParser import FBParser
 from FTParser import FTParser
 from LAParser import LAParser
+from FRParser import  FRParser
 import functools
 
-
 from utils import Utils
+
 
 def _getTasks(dir, pattern):
     file_list = []
@@ -45,7 +46,6 @@ def _parseAndWriteFB(file):
 
 @_timeit
 def parseAndWriteFBDir(dir):
-
     task_list = _getTasks(dir, 'fb*')
     print 'there are ', len(task_list), 'tasks in ', dir
     for task in task_list:
@@ -88,6 +88,23 @@ def parseAndWriteLADir(dir):
         # print task
         _parseAndWriteLA(task)
 
+
+
+def _parseAndWriteFR(file):
+    with io.open(file, mode='r', encoding='latin-1') as f:
+        raw_text = f.read()
+        # TODO  may be there will be some preprocessing of raw_text like what happened in _parseAndWriteLA.
+        parser = FRParser()
+        parser.feed(raw_text)
+
+
+@_timeit
+def parseAndWriteFRDir(dir):
+    task_list = _getTasks(dir, 'fr*')
+    print 'there are ', len(task_list), 'tasks in ', dir
+    for task in task_list:
+        # print task
+        _parseAndWriteFR(task)
 # _task = [
 #          parseAndWriteFBDir,
 #          parseAndWriteFTDir,
@@ -95,26 +112,26 @@ def parseAndWriteLADir(dir):
 #          ]
 @_timeit
 def parseMultiProc():
-
     Utils.initialize()
     pool = Pool(multiprocessing.cpu_count())
-    pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB, ))
-    pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT, ))
-    pool.apply_async(parseAndWriteLADir, (Utils.DIR_LA, ))
+    pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB,))
+    pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT,))
+    pool.apply_async(parseAndWriteLADir, (Utils.DIR_LA,))
+    pool.apply_async(parseAndWriteFRDir, (Utils.DIR_FR,))
     # result = pool.apply_async(func = sleep, args = (5, ))
 
     pool.close()
     pool.join()
     print "all done"
 
+
 @_timeit
 def parseMultiThread():
-
     Utils.initialize()
     pool = ThreadPool(multiprocessing.cpu_count())
-    pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB, ))
-    pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT, ))
-    pool.apply_async(parseAndWriteLADir, (Utils.DIR_LA, ))
+    pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB,))
+    pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT,))
+    pool.apply_async(parseAndWriteLADir, (Utils.DIR_LA,))
     # result = pool.apply_async(func = sleep, args = (5, ))
 
     pool.close()
@@ -134,11 +151,12 @@ def parseInOrder():
 if __name__ == '__main__':
     # parseMultiProc()
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', type=str, help="a full path to Assigment folder.\t Attention there is a space in 'Assignment Two'")
-    parser.add_argument('-t',  type=str, help='a full path where you want to save the json files')
+    parser.add_argument('-f', type=str,
+                        help="a full path to Assigment folder.\t Attention there is a space in 'Assignment Two'")
+    parser.add_argument('-t', type=str, help='a full path where you want to save the json files')
     args = parser.parse_args()
 
-    if  args.t and args.f:
+    if args.t and args.f:
         Utils.initialize(args.f, args.t)
         parseMultiProc()
     else:
