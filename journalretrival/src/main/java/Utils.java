@@ -12,8 +12,8 @@ public class Utils {
     public static File JSONS_DIR = null;
     public static File QUERIES_FIR = null;
 
-    private static void clearTempDir(boolean clearIndex) {
-        if (clearIndex) {
+    private static void clearTempDir(boolean ifClearIndex) {
+        if (ifClearIndex) {
             try {
                 clear(TEMP_DIR);
             } catch (IOException e) {
@@ -24,13 +24,13 @@ public class Utils {
         }
         System.out.println("the director " + INDEX_DIR.toString() + " have been made.");
     }
-    public static void initialize(boolean clearIndex, String jsonsDirPath, String queriesDirPath) {
-        clearTempDir(clearIndex);
+    public static void initialize(boolean ifclearIndex, String jsonsDirPath, String queriesDirPath) {
+        clearTempDir(ifclearIndex);
         JSONS_DIR = new File(jsonsDirPath);
         QUERIES_FIR = new File(queriesDirPath);
         if (JSONS_DIR.isDirectory()  && QUERIES_FIR.isFile()) {
             System.out.println("jsons directory is :" + JSONS_DIR.getAbsolutePath());
-            System.out.println("queries directory is:" + QUERIES_FIR.getAbsolutePath());
+            System.out.println("queries file is:" + QUERIES_FIR.getAbsolutePath());
         } else {
             System.out.println("-j should follow a path to directory\n -j should follow a path to a file");
         }
@@ -42,7 +42,7 @@ public class Utils {
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
-        System.out.println("the director " + TEMP_DIR.toString() + "have been deleted.");
+        System.out.println("the director " + TEMP_DIR.toString() + " have been deleted.");
         // common-io to delete a directory
 //        FileUtils.forceDelete(new File(destination));
     }

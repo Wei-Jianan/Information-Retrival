@@ -1,7 +1,11 @@
 import org.apache.commons.cli.*;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+
+import java.io.IOException;
 
 public class Main {
-    public static void main(String args[]) {
+    private static void addCommandArgsAndInit(String args[]) {
         Options options = new Options();
 
         Option jsons = new Option("j", "jsons", true, "json files directory containing all raw document");
@@ -28,6 +32,29 @@ public class Main {
 
         String jsonsDirPath = cmd.getOptionValue("jsons");
         String queriesDirPath = cmd.getOptionValue("queries");
+        // ATTENTION! clear all the index file and remake directory !!
         Utils.initialize(true, jsonsDirPath, queriesDirPath);
+    }
+
+    private static void test() {
+
+//        Utils.clear()
+    }
+
+    public static void main(String args[]) throws IOException {
+        addCommandArgsAndInit(args);
+
+        test();
+
+        Analyzer analyzer = new StandardAnalyzer();
+
+        Indexer indexer = new Indexer(Utils.INDEX_DIR, analyzer);
+        long startTime = System.currentTimeMillis();
+        indexer.indexAll(Utils.JSONS_DIR, 10);
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("That took " + (endTime - startTime) / 1000.0 + " seconds");
+
+
     }
 }

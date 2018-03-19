@@ -21,4 +21,6 @@ dependencies {
     compile 'org.codehaus.plexus:plexus-archiver:2.2'
 //    compile 'org.kohsuke.args4j:args4j-maven-plugin:2.33'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+//    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8.1'
 }
