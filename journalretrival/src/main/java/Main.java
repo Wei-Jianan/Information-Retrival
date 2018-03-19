@@ -50,7 +50,11 @@ public class Main {
 
         Indexer indexer = new Indexer(Utils.INDEX_DIR, analyzer);
         long startTime = System.currentTimeMillis();
-        indexer.indexAll(Utils.JSONS_DIR, 10);
+        // if you are not sure use defualt number of Threads
+        indexer.indexAll(Utils.JSONS_DIR);
+        // second parameter is numThreads , 10 threads take 1 mins to index on my mac
+//        indexer.indexAll(Utils.JSONS_DIR, 10);
+
         long endTime = System.currentTimeMillis();
 
         System.out.println("That took " + (endTime - startTime) / 1000.0 + " seconds");
