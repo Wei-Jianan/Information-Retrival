@@ -1,3 +1,4 @@
+package cn.demo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.lucene.analysis.Analyzer;
@@ -18,7 +19,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class Indexer {
-//    private int counter;
+    //    private int counter;
     public Analyzer analyzer;
     public File indexDir;
     private IndexWriter writer;
@@ -54,11 +55,11 @@ public class Indexer {
                 .forEach(this::indexDic);
         try {
             writer.close();
+            System.out.println("Index built succeed!");
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Index built failed!");
         }
-        System.out.println("Index built succeed!");
 
     }
 
@@ -104,7 +105,6 @@ public class Indexer {
 
 //         It show that there are quite a lot of LA files without "text" tag
         Indexer indexer = new Indexer(Utils.INDEX_DIR, new StandardAnalyzer());
-        Utils.JSONS_DIR = new File("/Users/jiananwei/Desktop/haha");
         indexer.getTasks(Utils.JSONS_DIR).stream()
                 .map(indexer::getMapFromJson)
                 .filter(map ->

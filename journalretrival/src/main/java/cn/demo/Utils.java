@@ -1,3 +1,4 @@
+package cn.demo;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +33,7 @@ public class Utils {
             System.out.println("jsons directory is :" + JSONS_DIR.getAbsolutePath());
             System.out.println("queries file is:" + QUERIES_FIR.getAbsolutePath());
         } else {
-            System.out.println("-j should follow a path to directory\n -j should follow a path to a file");
+            System.out.println("-j should follow a path to directory\n -j should follow a path to a file\nThe path should be absolute path");
         }
     }
     private static void clear(File toBeDeleted) throws IOException {

@@ -1,3 +1,5 @@
+package cn.demo;
+
 import org.apache.commons.cli.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -33,7 +35,7 @@ public class Main {
         String jsonsDirPath = cmd.getOptionValue("jsons");
         String queriesDirPath = cmd.getOptionValue("queries");
         // ATTENTION! clear all the index file and remake directory !!
-        Utils.initialize(true, jsonsDirPath, queriesDirPath);
+        Utils.initialize(false, jsonsDirPath, queriesDirPath);
     }
 
     private static void test() {
