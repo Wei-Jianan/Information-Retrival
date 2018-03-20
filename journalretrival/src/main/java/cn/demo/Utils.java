@@ -23,7 +23,7 @@ public class Utils {
             TEMP_DIR.mkdir();
             INDEX_DIR.mkdirs();
         }
-        System.out.println("the director " + INDEX_DIR.toString() + " have been made.");
+        System.out.println("the director " + INDEX_DIR.getAbsolutePath() + " have been made.");
     }
     public static void initialize(boolean ifclearIndex, String jsonsDirPath, String queriesDirPath) {
         clearTempDir(ifclearIndex);
@@ -43,7 +43,7 @@ public class Utils {
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
-        System.out.println("the director " + TEMP_DIR.toString() + " have been deleted.");
+        System.out.println("the director " + TEMP_DIR.getAbsolutePath() + " have been deleted.");
         // common-io to delete a directory
 //        FileUtils.forceDelete(new File(destination));
     }
