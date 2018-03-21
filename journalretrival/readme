@@ -1,7 +1,8 @@
 After it is compile to a jar.
 type something like " jave -jar ****.jar -j /Users/jiananwei/Desktop/JSON -q /Users/jiananwei/Desktop/CS7IS3-Assignment2-Topics"
 -j follow the path to where json files put,
-and for now -q is doing nothing but it should be specified.
+
+the file named "DocRank" to be trec_val are inside temp/ director.
 
 path must be absolute path!
-after 1-2min there will be a directory "temp/index" built.
+It take 1 min in my Mac.
