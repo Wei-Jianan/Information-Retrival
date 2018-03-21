@@ -90,7 +90,7 @@ def parseAndWriteLADir(dir):
 
 
 def _parseAndWriteFR(file):
-    print "opening FR file", file
+    # print "opening FR file", file
     with open(file, mode='r') as f:
         # with io.open(file, mode='r', encoding='utf-8') as f:
 
