@@ -40,10 +40,10 @@ public class Searcher {
             System.exit(1);
         }
         this.indexSearcher = new IndexSearcher(indexReader);
-        this.indexSearcher.setSimilarity(new BM25Similarity());// TODO !!!!!!!!!!!!!!!!!
+        this.indexSearcher.setSimilarity(new BM25Similarity());
     }
 
-    public ArrayList<ArrayList<String>> searchQryList(ArrayList<String> qryList, int numToRanked) {
+    public ArrayList<ArrayList<String>> searchQueries(ArrayList<String> qryList, int numToRanked) {
         // functional programming is amazing!!
 
         return qryList.stream()
@@ -99,15 +99,15 @@ public class Searcher {
 
         System.out.println(result);
         System.out.println("-------------------------\n\n");
-        Indexer indexer = new Indexer(Utils.INDEX_DIR, new StandardAnalyzer());
-        Searcher searcher = new Searcher(indexer);
-//        System.out.println(searcher.searchQryList(FileParser.parseCranQry(Utils.RAW_QRY), 120 ).get(224).size());
-        topDocs = searcher.search(questionStr, 50);
-        scoreDocs = topDocs.scoreDocs;
-        List list = Arrays.stream(scoreDocs)
-                .map(scoreDoc -> scoreDoc.doc)
-                .collect(Collectors.toList());
-        System.out.println(result);
+//        Indexer indexer = new Indexer(Utils.INDEX_DIR, new StandardAnalyzer());
+//        Searcher searcher = new Searcher(indexer);
+////        System.out.println(searcher.searchQryList(FileParser.parseCranQry(Utils.RAW_QRY), 120 ).get(224).size());
+//        topDocs = searcher.search(questionStr, 50);
+//        scoreDocs = topDocs.scoreDocs;
+//        List list = Arrays.stream(scoreDocs)
+//                .map(scoreDoc -> scoreDoc.doc)
+//                .collect(Collectors.toList());
+//        System.out.println(result);
 
     }
 }

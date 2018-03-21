@@ -7,6 +7,12 @@ public class TopicQuery {
     private String description;
     private String narrative;
 
+    @Override
+    public String toString() {
+        return String.format("{\nnum: %d\ntitle: %s\ndescription: %s\nnarrative: %s\n}",
+                this.num, this.title, this.description, this.narrative);
+    }
+
     public int getNum() {
         return num;
     }
