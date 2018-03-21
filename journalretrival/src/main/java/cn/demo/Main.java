@@ -51,7 +51,7 @@ public class Main {
     }
 
     public static void main(String args[]) throws IOException {
-        addCommandArgsAndInit(args, false); // TODO change ifclearIndex to false if not debugging indexing phase
+        addCommandArgsAndInit(args, true); // TODO change ifclearIndex to false if not debugging indexing phase
 
         Analyzer analyzer = new StandardAnalyzer();
 
@@ -60,7 +60,7 @@ public class Main {
         // if you are not sure use defualt number of Threads
 //        indexer.indexAll(Utils.JSONS_DIR);
         // second parameter is numThreads , 10 threads take 1 mins to index on my mac
-//        indexer.indexAll(Utils.JSONS_DIR, 10); //TODO cancel comment
+        indexer.indexAll(Utils.JSONS_DIR, 10); //TODO cancel comment
         long endTime = System.currentTimeMillis();
         System.out.println("Indexing took " + (endTime - startTime) / 1000.0 + " seconds");
 
@@ -71,20 +71,6 @@ public class Main {
         searcher.searchTopicQuerysandGenerateDocRank(queryObjects, 1000, Utils.DOC_RANK_FILE);
         endTime = System.currentTimeMillis();
         System.out.println("searching took " + (endTime - startTime) / 1000.0 + " seconds");
-        // query the first question[1]
-//        TopDocs topDocs = searcher.search(queries.get(1), 50);
-//        Arrays.stream(topDocs.scoreDocs)
-//                .map((ScoreDoc scoreDoc) -> {
-//                    Document document = null;
-//                    try {
-//                        document = indexReader.document(scoreDoc.doc);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    StringBuilder stringBuilder = new StringBuilder();
-//                    stringBuilder.append()
-//                    return "docno=  " + document.getField("docno").stringValue() + " score=" + scoreDoc.score;
-//                })
-//                .forEach(System.out::println);
+
     }
 }

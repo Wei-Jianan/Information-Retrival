@@ -112,13 +112,6 @@ public class Indexer {
                         !map.containsKey("docno") || !map.containsKey("text"))// row document without <TEXT>
                 .map(map -> map.getOrDefault("docno", "!!!!!!!!!!No docno"))
                 .forEach(System.out::println);
-        // test
-//        File file1 = new File("/Users/jiananwei/Desktop/haha/FBIS3-45340.json");
-//        File file2 = new File( "/Users/jiananwei/Desktop/haha/FT931-16194.json");
-//        File file3 = new File( "/Users/jiananwei/Desktop/haha/LA090290-0155.json");
-//        System.out.println(indexer.getMapFromJson(file1).keySet());
-//        System.out.println(indexer.getMapFromJson(file2).keySet());
-//        System.out.println(indexer.getMapFromJson(file3).keySet());
     }
 
 

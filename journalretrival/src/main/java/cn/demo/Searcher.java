@@ -59,6 +59,21 @@ public class Searcher {
         return topDocs;
     }
 
+    private TopDocs searchTopicQuery(TopicQuery queryObject, int numToRanked) {
+        TopDocs topDocs = this.search(queryObject.formQuery(), numToRanked);
+        return topDocs;
+    }
+
+    private String getDocNo(ScoreDoc scoreDoc) {
+        Document document = null;
+        try {
+            document = this.indexReader.document(scoreDoc.doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return document.getField("docno").stringValue();
+    }
+
     public void searchTopicQuerysandGenerateDocRank(List<TopicQuery> queryObjects, int numToRanked, File DocRank) {
         BufferedWriter writer = null;
         try {
@@ -112,20 +127,6 @@ public class Searcher {
 //                );
     }
 
-    private String getDocNo(ScoreDoc scoreDoc) {
-        Document document = null;
-        try {
-            document = this.indexReader.document(scoreDoc.doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return document.getField("docno").stringValue();
-    }
-
-    private TopDocs searchTopicQuery(TopicQuery queryObject, int numToRanked) {
-        TopDocs topDocs = this.search(queryObject.formQuery(), numToRanked);
-        return topDocs;
-    }
 
     private ArrayList<ArrayList<String>> searchQueries(ArrayList<String> qryList, int numToRanked) {
         // functional programming is amazing!!
@@ -143,7 +144,4 @@ public class Searcher {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
-
-    }
 }
