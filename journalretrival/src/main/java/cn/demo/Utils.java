@@ -24,7 +24,9 @@ public class Utils {
             INDEX_DIR.mkdirs();
         }
         try {
-            clear(DOC_RANK_FILE);
+            if (DOC_RANK_FILE.exists()) {
+                clear(DOC_RANK_FILE);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
