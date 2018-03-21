@@ -24,7 +24,6 @@ class Utils():
 
 
 
-
 if __name__ == '__main__':
     # Utils.initialize()
     # print Utils.DIR_FB

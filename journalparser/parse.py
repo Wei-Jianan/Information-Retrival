@@ -90,20 +90,38 @@ def parseAndWriteLADir(dir):
 
 
 def _parseAndWriteFR(file):
-    # TODO : call FRParser
-    pass
+    print "opening FR file", file
+    with open(file, mode='r') as f:
+        # with io.open(file, mode='r', encoding='utf-8') as f:
+
+
+        raw_text = f.read()
+        #  delete all lines starting with '<!--'
+        filter_text = str()
+        for line in raw_text.splitlines():
+            if not line.startswith('<!--'):
+                filter_text += line
+
+        parser = FRParser()
+        parser.feed(filter_text)
+
 
 
 @_timeit
 def parseAndWriteFRDir(dir):
     task_list = _getTasks(dir, 'fr*')
     print 'there are ', len(task_list), 'tasks in ', dir
+
+    # only first file
+    # _parseAndWriteFR(task_list[0])
+
     for task in task_list:
         _parseAndWriteFR(task)
 
 
 @_timeit
 def parseMultiProc():
+    print "number of processors: ", multiprocessing.cpu_count()
     pool = Pool(multiprocessing.cpu_count())
     pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB,))
     pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT,))
@@ -118,10 +136,12 @@ def parseMultiProc():
 
 @_timeit
 def parseMultiThread():
+    print "number of processors: ", multiprocessing.cpu_count()
     pool = ThreadPool(multiprocessing.cpu_count())
-    pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB,))
-    pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT,))
-    pool.apply_async(parseAndWriteLADir, (Utils.DIR_LA,))
+    # pool.apply_async(parseAndWriteFBDir, (Utils.DIR_FB,))
+    # pool.apply_async(parseAndWriteFTDir, (Utils.DIR_FT,))
+    # pool.apply_async(parseAndWriteLADir, (Utils.DIR_LA,))
+    pool.apply_async(parseAndWriteFRDir, (Utils.DIR_FR,))
     # result = pool.apply_async(func = sleep, args = (5, ))
 
     pool.close()
@@ -147,6 +167,7 @@ if __name__ == '__main__':
     if args.t and args.f:
         Utils.initialize(args.f, args.t)
         parseMultiProc()
+        # parseMultiThread()
     else:
         print "-f are -t are required\ncheck python2 parser.py --help"
     # print parser.parse_args(('from'))
