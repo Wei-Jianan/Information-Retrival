@@ -13,7 +13,7 @@ public class TopicQuery {
                 this.num, this.title, this.description, this.narrative);
     }
     public String formQuery( ) {
-        return this.title  + this.description;
+        return this.title + " " + this.description;
     }
 
     public int getNum() {

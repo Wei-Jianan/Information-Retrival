@@ -80,22 +80,11 @@ public class Searcher {
             writer = new BufferedWriter(new FileWriter(DocRank));
             for (TopicQuery queryObject : queryObjects) {
                 TopDocs topDocs = this.searchTopicQuery(queryObject, numToRanked);
-                StringBuilder stringBuilder = new StringBuilder();
+                String string = null;
                 for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-                    stringBuilder.append(queryObject.getNum());
-                    stringBuilder.append(" ");
-                    stringBuilder.append("Q0");
-                    stringBuilder.append(" ");
-                    stringBuilder.append(this.getDocNo(scoreDoc));
-                    stringBuilder.append(" ");
-                    stringBuilder.append("0");
-                    stringBuilder.append(" ");
-                    stringBuilder.append(String.valueOf(scoreDoc.score));
-                    stringBuilder.append(" ");
-                    stringBuilder.append("STANDARD\n");
+                     string = String.format("%d Q0 %s 0 %f STANDARD\n", queryObject.getNum(), this.getDocNo(scoreDoc), scoreDoc.score );
+                    writer.write(string);
                 }
-                writer.write(stringBuilder.toString());
-                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();

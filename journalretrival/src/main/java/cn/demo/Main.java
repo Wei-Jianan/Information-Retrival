@@ -3,15 +3,8 @@ package cn.demo;
 import org.apache.commons.cli.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -64,7 +57,7 @@ public class Main {
         long endTime = System.currentTimeMillis();
         System.out.println("Indexing took " + (endTime - startTime) / 1000.0 + " seconds");
 
-        List<TopicQuery> queryObjects = QueryParser.parseQuery(Utils.QUERIES_FIR);
+        List<TopicQuery> queryObjects = TopicQueryParser.parseQuery(Utils.QUERIES_FIR);
         Searcher searcher = new Searcher(indexer);
 
         startTime = System.currentTimeMillis();

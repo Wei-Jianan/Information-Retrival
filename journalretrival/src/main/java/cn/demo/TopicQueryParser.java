@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 
-public class QueryParser {
+public class TopicQueryParser {
 
 
     public static List<TopicQuery> parseQuery(File queryFile) {
