@@ -51,7 +51,7 @@ public class Main {
     }
 
     public static void main(String args[]) throws IOException {
-        addCommandArgsAndInit(args, true); // TODO change ifclearIndex to false if not debugging indexing phase
+        addCommandArgsAndInit(args, false); // TODO change ifclearIndex to false if not debugging indexing phase
 
         Analyzer analyzer = new StandardAnalyzer();
 
@@ -64,21 +64,27 @@ public class Main {
         long endTime = System.currentTimeMillis();
         System.out.println("Indexing took " + (endTime - startTime) / 1000.0 + " seconds");
 
-        IndexReader indexReader = DirectoryReader.open(FSDirectory.open(Utils.INDEX_DIR.toPath()));
-        List<String> queries = QueryParser.parseQuery(Utils.QUERIES_FIR);
+        List<TopicQuery> queryObjects = QueryParser.parseQuery(Utils.QUERIES_FIR);
         Searcher searcher = new Searcher(indexer);
+
+        startTime = System.currentTimeMillis();
+        searcher.searchTopicQuerysandGenerateDocRank(queryObjects, 1000, Utils.DOC_RANK_FILE);
+        endTime = System.currentTimeMillis();
+        System.out.println("searching took " + (endTime - startTime) / 1000.0 + " seconds");
         // query the first question[1]
-        TopDocs topDocs = searcher.search(queries.get(1), 50);
-        Arrays.stream(topDocs.scoreDocs)
-                .map((ScoreDoc scoreDoc) -> {
-                    Document document = null;
-                    try {
-                        document = indexReader.document(scoreDoc.doc);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return "docno=" + document.getField("docno").stringValue() + " score=" + scoreDoc.score;
-                })
-                .forEach(System.out::println);
+//        TopDocs topDocs = searcher.search(queries.get(1), 50);
+//        Arrays.stream(topDocs.scoreDocs)
+//                .map((ScoreDoc scoreDoc) -> {
+//                    Document document = null;
+//                    try {
+//                        document = indexReader.document(scoreDoc.doc);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    StringBuilder stringBuilder = new StringBuilder();
+//                    stringBuilder.append()
+//                    return "docno=  " + document.getField("docno").stringValue() + " score=" + scoreDoc.score;
+//                })
+//                .forEach(System.out::println);
     }
 }

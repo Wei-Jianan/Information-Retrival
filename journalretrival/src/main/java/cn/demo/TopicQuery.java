@@ -12,6 +12,9 @@ public class TopicQuery {
         return String.format("{\nnum: %d\ntitle: %s\ndescription: %s\nnarrative: %s\n}",
                 this.num, this.title, this.description, this.narrative);
     }
+    public String formQuery( ) {
+        return this.title  + this.description;
+    }
 
     public int getNum() {
         return num;

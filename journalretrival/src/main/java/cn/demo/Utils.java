@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.temporal.Temporal;
 import java.util.Comparator;
 
 public class Utils {
     private final static File TEMP_DIR = new File("temp");
     public final static File INDEX_DIR = new File(TEMP_DIR, "index");
+    public final static File DOC_RANK_FILE = new File(TEMP_DIR, "DocRank");
     public static File JSONS_DIR = null;
     public static File QUERIES_FIR = null;
 
@@ -22,6 +22,11 @@ public class Utils {
             }
             TEMP_DIR.mkdir();
             INDEX_DIR.mkdirs();
+        }
+        try {
+            clear(DOC_RANK_FILE);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         System.out.println("the director " + INDEX_DIR.getAbsolutePath() + " have been made.");
     }
@@ -43,7 +48,7 @@ public class Utils {
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
-        System.out.println("the director " + TEMP_DIR.getAbsolutePath() + " have been deleted.");
+        System.out.println(toBeDeleted.getAbsolutePath() + " have been deleted.");
         // common-io to delete a directory
 //        FileUtils.forceDelete(new File(destination));
     }

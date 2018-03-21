@@ -1,8 +1,7 @@
 package cn.demo;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.synonym.SynonymMap;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
@@ -15,18 +14,20 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.queryparser.classic.QueryParser;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class Searcher {
     private Analyzer analyzer;
     private File indexDir;
+    private IndexReader indexReader;
     public IndexSearcher indexSearcher;
-    public static String[] fields = {"text", "docno"}; // TODO add all fields
+    public static String[] fields = {"text", "date"}; // TODO add all fields
 
     public Searcher(Indexer indexer) {
         this.indexDir = indexer.indexDir;
@@ -34,18 +35,100 @@ public class Searcher {
         IndexReader indexReader = null;
 
         try {
-            indexReader = DirectoryReader.open(FSDirectory.open(this.indexDir.toPath()));
+            this.indexReader = DirectoryReader.open(FSDirectory.open(this.indexDir.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        this.indexSearcher = new IndexSearcher(indexReader);
+        this.indexSearcher = new IndexSearcher(this.indexReader);
         this.indexSearcher.setSimilarity(new BM25Similarity());
     }
 
-    public ArrayList<ArrayList<String>> searchQueries(ArrayList<String> qryList, int numToRanked) {
-        // functional programming is amazing!!
 
+    public TopDocs search(String questionStr, int numToRanked) {
+        TopDocs topDocs = null;
+        QueryParser queryParser = new MultiFieldQueryParser(fields, this.analyzer);
+        try {
+            Query query = queryParser.parse(questionStr);
+            topDocs = this.indexSearcher.search(query, numToRanked);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return topDocs;
+    }
+
+    public void searchTopicQuerysandGenerateDocRank(List<TopicQuery> queryObjects, int numToRanked, File DocRank) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(DocRank));
+            for (TopicQuery queryObject : queryObjects) {
+                TopDocs topDocs = this.searchTopicQuery(queryObject, numToRanked);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+                    stringBuilder.append(queryObject.getNum());
+                    stringBuilder.append(" ");
+                    stringBuilder.append("Q0");
+                    stringBuilder.append(" ");
+                    stringBuilder.append(this.getDocNo(scoreDoc));
+                    stringBuilder.append(" ");
+                    stringBuilder.append("0");
+                    stringBuilder.append(" ");
+                    stringBuilder.append(String.valueOf(scoreDoc.score));
+                    stringBuilder.append(" ");
+                    stringBuilder.append("STANDARD\n");
+                }
+                writer.write(stringBuilder.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("the RankDoc to be trec_evaled done.");
+//        queryObjects.stream()
+//                .map((TopicQuery queryObject) -> this.search(queryObject.formQuery(), numToRanked))
+//                .map((TopDocs topDocs) -> topDocs.scoreDocs)
+//                .map((ScoreDoc[] scoreDocs) ->
+//                                Arrays.stream(scoreDocs)
+//                                        .map((ScoreDoc scoreDoc) -> {
+//                                            Document document = null;
+//                                            try {
+//                                                document = indexReader.document(scoreDoc.doc);
+//                                            } catch (IOException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                            StringBuilder builder = new StringBuilder();
+//                                            builder.append(queryObjects[i]);
+//                                            return "docno=  " + document.getField("docno").stringValue() + " score=" + scoreDoc.score;
+////                                            return "hahah";
+//                                        })
+//                );
+    }
+
+    private String getDocNo(ScoreDoc scoreDoc) {
+        Document document = null;
+        try {
+            document = this.indexReader.document(scoreDoc.doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return document.getField("docno").stringValue();
+    }
+
+    private TopDocs searchTopicQuery(TopicQuery queryObject, int numToRanked) {
+        TopDocs topDocs = this.search(queryObject.formQuery(), numToRanked);
+        return topDocs;
+    }
+
+    private ArrayList<ArrayList<String>> searchQueries(ArrayList<String> qryList, int numToRanked) {
+        // functional programming is amazing!!
         return qryList.stream()
                 .map(questionStr ->
                         this.search(questionStr, numToRanked)
@@ -60,54 +143,7 @@ public class Searcher {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public TopDocs search(String questionStr, int numToRanked) {
-//        this.counter += 1;
-//        System.out.println(" the is the " + this.counter + " question!");
-        Query query = null;
-        QueryParser queryParser = new MultiFieldQueryParser(fields, this.analyzer);
-        try {
-            query = queryParser.parse(questionStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        try {
-//            this.indexSearcher.search(query, numToRanked).scoreDocs[1].
-            return this.indexSearcher.search(query, numToRanked);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static void main(String[] args) throws IOException, ParseException {
-        //test code
-        String questionStr = "question you ask";
-//        System.out.println(questionStr + " !!!!!!!!!!!!!!! the null pointer exection raiser!");
-        Analyzer analyzer = new StandardAnalyzer();
-
-        QueryParser queryParser = new QueryParser("text", analyzer);
-        Query query = queryParser.parse(questionStr);
-        IndexReader indexReader = DirectoryReader.open(FSDirectory.open(Utils.INDEX_DIR.toPath()));
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        TopDocs topDocs = indexSearcher.search(query, 50);
-//        TopDocs topDocs = searcher.search("what are the structural and aeroelastic problems associated with flight\n" +
-//                "of high speed aircraft .", 100);
-        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
-        List result = Arrays.stream(scoreDocs)
-                .map(scoreDoc -> scoreDoc.doc)
-                .collect(Collectors.toList());
-
-        System.out.println(result);
-        System.out.println("-------------------------\n\n");
-//        Indexer indexer = new Indexer(Utils.INDEX_DIR, new StandardAnalyzer());
-//        Searcher searcher = new Searcher(indexer);
-////        System.out.println(searcher.searchQryList(FileParser.parseCranQry(Utils.RAW_QRY), 120 ).get(224).size());
-//        topDocs = searcher.search(questionStr, 50);
-//        scoreDocs = topDocs.scoreDocs;
-//        List list = Arrays.stream(scoreDocs)
-//                .map(scoreDoc -> scoreDoc.doc)
-//                .collect(Collectors.toList());
-//        System.out.println(result);
 
     }
 }

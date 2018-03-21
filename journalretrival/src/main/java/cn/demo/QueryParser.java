@@ -8,15 +8,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-//import org.dom4j.DocumentException;
-//import org.dom4j.Node;
-//import org.dom4j.io.SAXReader;
-import org.xml.sax.InputSource;
 
 public class QueryParser {
 
 
-    public static List<String> parseQuery(File queryFile) {
+    public static List<TopicQuery> parseQuery(File queryFile) {
         Scanner scanner = null;
         try {
             scanner = new Scanner(queryFile);
@@ -35,8 +31,7 @@ public class QueryParser {
             query.setNarrative(lines[4].replaceAll("Narrative:|</top>", "").trim());
             queriyObjects.add(query);
         }
-        queries = formQueries(queriyObjects);
-        return queries;
+        return queriyObjects;
     }
 
     public static List<String> formQueries(List<TopicQuery> queriyObjects) {
