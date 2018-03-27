@@ -2,7 +2,14 @@ package cn.demo;
 
 import org.apache.commons.cli.*;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.StopFilterFactory;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.KStemFilterFactory;
+import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,16 +51,24 @@ public class Main {
     }
 
     public static void main(String args[]) throws IOException {
-        addCommandArgsAndInit(args, true); // TODO change ifclearIndex to false if not debugging indexing phase
+        addCommandArgsAndInit(args, false); // TODO change ifclearIndex to false if not debugging indexing phase
 
         Analyzer analyzer = new StandardAnalyzer();
-
+//        Analyzer analyzer = CustomAnalyzer.builder()
+//                .withTokenizer(StandardTokenizerFactory.class)
+//                .addTokenFilter(LowerCaseFilterFactory.class)
+//                .addTokenFilter(PorterStemFilterFactory.class)
+//                .addTokenFilter(StandardFilterFactory.class)
+//
+//                .addTokenFilter(StopFilterFactory.class)
+//                .addTokenFilter(KStemFilterFactory.class)
+//                .build();
         Indexer indexer = new Indexer(Utils.INDEX_DIR, analyzer);
         long startTime = System.currentTimeMillis();
         // if you are not sure use defualt number of Threads
 //        indexer.indexAll(Utils.JSONS_DIR);
         // second parameter is numThreads , 10 threads take 1 mins to index on my mac
-        indexer.indexAll(Utils.JSONS_DIR, 10); //TODO cancel comment
+//        indexer.indexAll(Utils.JSONS_DIR, 10); //TODO cancel comment
         long endTime = System.currentTimeMillis();
         System.out.println("Indexing took " + (endTime - startTime) / 1000.0 + " seconds");
 

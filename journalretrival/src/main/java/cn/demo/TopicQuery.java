@@ -1,6 +1,13 @@
 package cn.demo;
 
 
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 public class TopicQuery {
     private int num;
     private String title;
@@ -12,9 +19,24 @@ public class TopicQuery {
         return String.format("{\nnum: %d\ntitle: %s\ndescription: %s\nnarrative: %s\n}",
                 this.num, this.title, this.description, this.narrative);
     }
-    public String formQuery( ) {
 
-        return this.title + " " + this.description ;
+    public String formQuery() {
+        //TODO ugly code, to be refactored
+//        System.out.println(this.narrative);
+        String content = this.narrative.replace("\n", " ");
+//        String[] sentences = content.split("[\\.|,|;]");
+        String[] sentences = content.split("[\\.|,|;]");
+        Pattern regrex = Pattern.compile(".*not relevant.*");
+        List<String> sentenceList =
+                Arrays.stream(sentences)
+                        .filter((String sentence) -> !regrex.matcher(sentence).matches())
+                        .collect(Collectors.toList());
+        String updatedNarrative = "";
+        for(String sentence : sentenceList) {
+            updatedNarrative += sentence;
+        }
+//        System.out.println(sentences.length +" " +  sentenceList.size());
+        return this.title + " " + this.description + " " + updatedNarrative ;
     }
 
 

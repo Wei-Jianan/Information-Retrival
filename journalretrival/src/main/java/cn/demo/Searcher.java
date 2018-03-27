@@ -41,6 +41,7 @@ public class Searcher {
             System.exit(1);
         }
         this.indexSearcher = new IndexSearcher(this.indexReader);
+//        this.indexSearcher.setSimilarity(new BM25Similarity());
         Similarity similarities[] = {
                 new BM25Similarity(2, (float) 0.89),
                 new DFRSimilarity(new BasicModelIn(), new AfterEffectB(), new NormalizationH1()),
@@ -54,7 +55,7 @@ public class Searcher {
         TopDocs topDocs = null;
         QueryParser queryParser = new MultiFieldQueryParser(fields, this.analyzer);
         try {
-            Query query = queryParser.parse(questionStr);
+            Query query = queryParser.parse(QueryParser.escape( questionStr));
             topDocs = this.indexSearcher.search(query, numToRanked);
         } catch (IOException e) {
             e.printStackTrace();
