@@ -10,7 +10,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.queryparser.classic.QueryParser;
 
@@ -41,7 +41,12 @@ public class Searcher {
             System.exit(1);
         }
         this.indexSearcher = new IndexSearcher(this.indexReader);
-        this.indexSearcher.setSimilarity(new BM25Similarity());
+        Similarity similarities[] = {
+                new BM25Similarity(2, (float) 0.89),
+                new DFRSimilarity(new BasicModelIn(), new AfterEffectB(), new NormalizationH1()),
+                new LMDirichletSimilarity(1500)
+        };
+        this.indexSearcher.setSimilarity(new MultiSimilarity(similarities));
     }
 
 
@@ -120,6 +125,7 @@ public class Searcher {
     private ArrayList<ArrayList<String>> searchQueries(ArrayList<String> qryList, int numToRanked) {
         // functional programming is amazing!!
         return qryList.stream()
+                .parallel()
                 .map(questionStr ->
                         this.search(questionStr, numToRanked)
                 )
