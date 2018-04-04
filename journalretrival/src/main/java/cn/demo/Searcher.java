@@ -26,8 +26,13 @@ public class Searcher {
     private Analyzer analyzer;
     private File indexDir;
     private IndexReader indexReader;
-    public IndexSearcher indexSearcher;
-    public static String[] fields = {"text", "date"}; // TODO add all fields
+    private IndexSearcher indexSearcher;
+    private static String[] fields = {"text"};
+    //If searching over multiple fields - can use this to weight them
+    private static Map<String, Float> boosts = new HashMap<>();
+    static {
+      boosts.put(fields[0], 1.0f);
+    }
 
     public Searcher(Indexer indexer) {
         this.indexDir = indexer.indexDir;
@@ -53,13 +58,11 @@ public class Searcher {
 
     public TopDocs search(String questionStr, int numToRanked) {
         TopDocs topDocs = null;
-        QueryParser queryParser = new MultiFieldQueryParser(fields, this.analyzer);
+        QueryParser queryParser = new MultiFieldQueryParser(fields, this.analyzer, boosts);
         try {
             Query query = queryParser.parse(QueryParser.escape( questionStr));
             topDocs = this.indexSearcher.search(query, numToRanked);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         return topDocs;
