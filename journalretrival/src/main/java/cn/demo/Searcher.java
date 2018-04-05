@@ -81,7 +81,7 @@ public class Searcher {
         try {
             Query query = queryParser.parse(QueryParser.escape(questionStr));
             //topDocs = this.indexSearcher.search(query, numToRanked);
-            Query expanded_query = expandQuery(query, 5);
+            Query expanded_query = expandQuery(query, 10);
             topDocs = this.indexSearcher.search(expanded_query, numToRanked);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class Searcher {
     }
 
     private TopDocs searchTopicQuery(TopicQuery queryObject, int numToRanked) {
-        TopDocs topDocs = this.search(queryObject.formQuery(), numToRanked);
+        TopDocs topDocs = this.search(queryObject.formNoNarrativeQuery(), numToRanked);
         return topDocs;
     }
 
