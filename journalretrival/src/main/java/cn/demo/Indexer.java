@@ -88,10 +88,16 @@ public class Indexer {
         for (String key : dic.keySet()) {
             if (key == "docno") {
                 field = new StringField(key, dic.get(key), Field.Store.YES);
-            } else {
-                field = new TextField(key, dic.getOrDefault(key, ""), Field.Store.NO);
+              doc.add(field);
             }
-            doc.add(field);
+            else if (key == "text") {
+                field = new TextField(key, dic.get(key), Field.Store.YES);
+              doc.add(field);
+            }
+//            else {
+//                field = new TextField(key, dic.getOrDefault(key, ""), Field.Store.NO);
+//            }
+
         }
         try {
             this.writer.addDocument(doc);

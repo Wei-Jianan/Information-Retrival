@@ -39,6 +39,11 @@ public class TopicQuery {
         return this.title + " " + this.description + " " + updatedNarrative ;
     }
 
+    //NOTE could weight the tile more than the description
+    public String formNoNarrativeQuery() {
+        return this.title + " " + this.description;
+    }
+
 
     public int getNum() {
         return num;

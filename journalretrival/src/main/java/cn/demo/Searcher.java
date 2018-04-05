@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queries.mlt.MoreLikeThisQuery;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.IndexSearcher;
@@ -55,13 +56,29 @@ public class Searcher {
         this.indexSearcher.setSimilarity(new MultiSimilarity(similarities));
     }
 
+    private Query expandQuery(Query query_to_expand) throws IOException {
+        System.out.println("Original query: " + query_to_expand.toString());
+        TopDocs topDocs = this.indexSearcher.search(query_to_expand, 1);
+        Document topDoc = this.indexReader.document(topDocs.scoreDocs[0].doc);
+        String top_doc_text = topDoc.getField("text").stringValue();
+        String[] moreLikeFields = {"text"};
+        MoreLikeThisQuery mltq = new MoreLikeThisQuery(top_doc_text,
+                moreLikeFields,
+                this.analyzer,
+                "text");
+        Query new_query = mltq.rewrite(this.indexReader);
+        System.out.println("Expanded query" + new_query.toString());
+        return new_query;
+    }
 
     public TopDocs search(String questionStr, int numToRanked) {
         TopDocs topDocs = null;
-        QueryParser queryParser = new MultiFieldQueryParser(fields, this.analyzer, boosts);
+        QueryParser queryParser = new QueryParser("text", this.analyzer);
         try {
             Query query = queryParser.parse(QueryParser.escape( questionStr));
             topDocs = this.indexSearcher.search(query, numToRanked);
+            //Query expanded_query = expandQuery(query);
+            //topDocs = this.indexSearcher.search(query, numToRanked);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
