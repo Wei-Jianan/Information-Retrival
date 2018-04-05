@@ -7,10 +7,8 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queries.mlt.MoreLikeThisQuery;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
+import org.apache.lucene.search.*;
 import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -56,29 +54,35 @@ public class Searcher {
         this.indexSearcher.setSimilarity(new MultiSimilarity(similarities));
     }
 
-    private Query expandQuery(Query query_to_expand) throws IOException {
+    private Query expandQuery(Query query_to_expand, int num_docs_for_expansion) throws IOException {
         System.out.println("Original query: " + query_to_expand.toString());
-        TopDocs topDocs = this.indexSearcher.search(query_to_expand, 1);
-        Document topDoc = this.indexReader.document(topDocs.scoreDocs[0].doc);
-        String top_doc_text = topDoc.getField("text").stringValue();
-        String[] moreLikeFields = {"text"};
-        MoreLikeThisQuery mltq = new MoreLikeThisQuery(top_doc_text,
-                moreLikeFields,
-                this.analyzer,
-                "text");
-        Query new_query = mltq.rewrite(this.indexReader);
-        System.out.println("Expanded query" + new_query.toString());
-        return new_query;
+        TopDocs topDocs = this.indexSearcher.search(query_to_expand, num_docs_for_expansion);
+        BooleanQuery.Builder query_builder = new BooleanQuery.Builder();
+        query_builder.add(query_to_expand, BooleanClause.Occur.SHOULD);
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+            Document topDoc = this.indexReader.document(scoreDoc.doc);
+            String top_doc_text = topDoc.getField("text").stringValue();
+            String[] moreLikeFields = {"text"};
+            MoreLikeThisQuery mltq = new MoreLikeThisQuery(top_doc_text,
+                    moreLikeFields,
+                    this.analyzer,
+                    "text");
+            Query new_query = mltq.rewrite(this.indexReader);
+            query_builder.add(new_query, BooleanClause.Occur.SHOULD);
+        }
+        Query expanded_query = query_builder.build();
+        System.out.println("Expanded query" + expanded_query.toString());
+        return expanded_query;
     }
 
     public TopDocs search(String questionStr, int numToRanked) {
         TopDocs topDocs = null;
         QueryParser queryParser = new QueryParser("text", this.analyzer);
         try {
-            Query query = queryParser.parse(QueryParser.escape( questionStr));
-            topDocs = this.indexSearcher.search(query, numToRanked);
-            //Query expanded_query = expandQuery(query);
+            Query query = queryParser.parse(QueryParser.escape(questionStr));
             //topDocs = this.indexSearcher.search(query, numToRanked);
+            Query expanded_query = expandQuery(query, 5);
+            topDocs = this.indexSearcher.search(expanded_query, numToRanked);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
