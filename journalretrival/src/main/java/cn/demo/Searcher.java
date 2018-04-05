@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queries.function.BoostedQuery;
 import org.apache.lucene.queries.mlt.MoreLikeThisQuery;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -80,6 +81,8 @@ public class Searcher {
         QueryParser queryParser = new QueryParser("text", this.analyzer);
         try {
             Query query = queryParser.parse(QueryParser.escape(questionStr));
+            //Boost the weight of the original query
+            query = new BoostQuery(query, 2);
             //topDocs = this.indexSearcher.search(query, numToRanked);
             Query expanded_query = expandQuery(query, 10);
             topDocs = this.indexSearcher.search(expanded_query, numToRanked);
