@@ -94,6 +94,7 @@ public class Searcher {
 
     private TopDocs searchTopicQuery(TopicQuery queryObject, int numToRanked) {
         TopDocs topDocs = this.search(queryObject.formNoNarrativeQuery(), numToRanked);
+//        TopDocs topDocs = this.search(queryObject.formQuery(), numToRanked);
         return topDocs;
     }
 
