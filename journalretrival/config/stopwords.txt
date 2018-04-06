@@ -79,3 +79,45 @@ take
 most
 because
 
+# stop words V3.0
+one
+year
+out
+time
+only
+under
+us
+any
+should
+like
+include
+them
+through
+even
+interest
+meet
+need
+
+# stop words V4.0
+still
+both
+point
+next
+just
+down
+right
+back
+must
+off
+show
+make
+did
+you
+give
+among
+within
+until
+
+# stop word V5.0
+
+
