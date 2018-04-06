@@ -20,7 +20,7 @@ public class TopicQuery {
                 this.num, this.title, this.description, this.narrative);
     }
 
-    public String formQuery() {
+    public String getformedNarritive() {
         //TODO ugly code, to be refactored
 //        System.out.println(this.narrative);
         String content = this.narrative.replace("\n", " ");
@@ -36,7 +36,7 @@ public class TopicQuery {
             updatedNarrative += sentence;
         }
 //        System.out.println(sentences.length +" " +  sentenceList.size());
-        return this.title + " " + this.description + " " + updatedNarrative ;
+        return "the" + updatedNarrative ;
     }
 
     //NOTE could weight the tile more than the description

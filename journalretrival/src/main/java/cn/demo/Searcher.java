@@ -93,8 +93,32 @@ public class Searcher {
     }
 
     private TopDocs searchTopicQuery(TopicQuery queryObject, int numToRanked) {
-        TopDocs topDocs = this.search(queryObject.formNoNarrativeQuery(), numToRanked);
+//        TopDocs topDocs = this.search(queryObject.formNoNarrativeQuery(), numToRanked);
 //        TopDocs topDocs = this.search(queryObject.formQuery(), numToRanked);
+
+        TopDocs topDocs = null;
+        QueryParser queryParser = new QueryParser("text", this.analyzer);
+        try {
+            Query query_title = queryParser.parse(QueryParser.escape(queryObject.getTitle()));
+            Query query_description = queryParser.parse(QueryParser.escape((queryObject.getDescription())));
+            Query query_narritive = queryParser.parse(QueryParser.escape((queryObject.getformedNarritive())));
+            //Boost the weight of the original query
+            query_title = new BoostQuery(query_title, 8);
+            query_description = new BoostQuery(query_description, 4);
+            query_narritive = new BoostQuery(query_narritive, 1);
+
+            BooleanQuery.Builder query_builder = new BooleanQuery.Builder();
+            query_builder.add(query_title, BooleanClause.Occur.SHOULD);
+            query_builder.add(query_description, BooleanClause.Occur.SHOULD);
+//            query_builder.add(query_narritive, BooleanClause.Occur.SHOULD);
+
+            Query boosted_query = query_builder.build();
+            //topDocs = this.indexSearcher.search(query, numToRanked);
+            Query expanded_query = expandQuery(boosted_query, 10);
+            topDocs = this.indexSearcher.search(expanded_query, numToRanked);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
         return topDocs;
     }
 
