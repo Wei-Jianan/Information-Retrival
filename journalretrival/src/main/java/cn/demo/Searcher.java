@@ -72,7 +72,8 @@ public class Searcher {
         System.out.println("Original query: " + query_to_expand.toString());
         TopDocs topDocs = this.indexSearcher.search(query_to_expand, num_docs_for_expansion);
         BooleanQuery.Builder query_builder = new BooleanQuery.Builder();
-        query_builder.add(query_to_expand, BooleanClause.Occur.SHOULD);
+        Query boosted_query_to_expand = new BoostQuery(query_to_expand, 20);
+        query_builder.add(boosted_query_to_expand, BooleanClause.Occur.SHOULD);
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
             Document topDoc = this.indexReader.document(scoreDoc.doc);
             String top_doc_text = topDoc.getField("text").stringValue();
@@ -81,7 +82,9 @@ public class Searcher {
                     moreLikeFields,
                     this.analyzer,
                     "text");
+            mltq.setMaxQueryTerms(7);
             Query new_query = mltq.rewrite(this.indexReader);
+            new_query = new BoostQuery(new_query, 30);
             query_builder.add(new_query, BooleanClause.Occur.SHOULD);
         }
         Query expanded_query = query_builder.build();
