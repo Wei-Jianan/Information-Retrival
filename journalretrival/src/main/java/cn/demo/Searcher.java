@@ -54,7 +54,20 @@ public class Searcher {
         };
         this.indexSearcher.setSimilarity(new MultiSimilarity(similarities));
     }
+    private String removeWordsIntersaction(String lhs, String rhs) {
+        String[] lhsWords = lhs.replaceAll("\\(|\\)", " ").replaceAll("text:", " ").split(" ");
+        String[] rhsWords = rhs.replaceAll("\\(|\\)", " ").replaceAll("text:", " ").split(" ");
+        Set<String> l = new HashSet<String>(Arrays.asList(lhsWords));
+        Set<String> r =new HashSet<String>(Arrays.asList(rhsWords));
+        l.addAll(r);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String word: l) {
+            stringBuilder.append(word);
+            stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
 
+    }
     private Query expandQuery(Query query_to_expand, int num_docs_for_expansion) throws IOException {
         System.out.println("Original query: " + query_to_expand.toString());
         TopDocs topDocs = this.indexSearcher.search(query_to_expand, num_docs_for_expansion);
@@ -110,7 +123,7 @@ public class Searcher {
             BooleanQuery.Builder query_builder = new BooleanQuery.Builder();
             query_builder.add(query_title, BooleanClause.Occur.SHOULD);
             query_builder.add(query_description, BooleanClause.Occur.SHOULD);
-//            query_builder.add(query_narritive, BooleanClause.Occur.SHOULD);
+            query_builder.add(query_narritive, BooleanClause.Occur.SHOULD);
 
             Query boosted_query = query_builder.build();
             //topDocs = this.indexSearcher.search(query, numToRanked);
